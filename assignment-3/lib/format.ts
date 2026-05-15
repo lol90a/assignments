@@ -1,5 +1,8 @@
 import { differenceInCalendarDays, format, parseISO } from "date-fns";
 
+// Date and status formatting lives outside components so table rows, dashboard
+// cards, and detail pages cannot drift into subtly different interpretations of
+// expiration state.
 export function formatDate(value: string): string {
   // Backend timestamps are ISO strings; parsing at the boundary keeps display
   // formatting consistent across tables, cards, and detail views.

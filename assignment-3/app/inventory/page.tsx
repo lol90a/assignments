@@ -3,6 +3,9 @@ import { DashboardCards } from "@/components/inventory/DashboardCards";
 import { InventoryTable } from "@/components/inventory/InventoryTable";
 import { listCertificates, summarizeInventory } from "@/lib/certificate-api";
 
+// This route is a server component by default. That matters because the Rust
+// backend URL, TLS flags, and future service credentials should stay on the
+// Next.js server instead of being shipped to browser JavaScript.
 type PageProps = {
   searchParams?: {
     query?: string;

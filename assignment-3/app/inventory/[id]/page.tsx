@@ -6,6 +6,9 @@ import { Card } from "@/components/ui/Card";
 import { getCertificate } from "@/lib/certificate-api";
 import { certificateState, daysUntil, formatDate } from "@/lib/format";
 
+// Detail pages are rendered on the server for the same reason as the inventory
+// table: the browser should not need to know internal backend topology or
+// service-to-service credentials to inspect a certificate record.
 type PageProps = {
   params: { id: string };
 };

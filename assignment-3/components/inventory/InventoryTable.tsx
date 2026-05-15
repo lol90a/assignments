@@ -9,6 +9,9 @@ import { Skeleton } from "../ui/Skeleton";
 import { certificateState, daysUntil, formatDate } from "@/lib/format";
 import type { InventoryResult } from "@/lib/types";
 
+// The table is the only client-heavy part of the inventory page. It uses SWR
+// for freshness after the SSR payload arrives, while filtering and pagination
+// still round-trip through server routes so backend details stay hidden.
 type Props = {
   initialData: InventoryResult;
   query: string;

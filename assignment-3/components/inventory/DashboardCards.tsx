@@ -2,6 +2,9 @@ import { AlertTriangle, BadgeCheck, Database, ShieldCheck } from "lucide-react";
 import { Card } from "../ui/Card";
 import type { DashboardSummary } from "@/lib/types";
 
+// Dashboard cards are defined as data so adding/removing a metric changes one
+// small list instead of duplicating JSX. That keeps the component predictable,
+// which is what operational dashboards need.
 const cards = [
   { key: "total", label: "Total certificates", icon: Database },
   { key: "expiringSoon", label: "Expiring in 30 days", icon: AlertTriangle },

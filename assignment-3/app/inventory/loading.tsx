@@ -1,5 +1,8 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 
+// Loading UI is kept route-local because the inventory page has a specific
+// structure. Mirroring the eventual layout minimizes visual jump when SSR data
+// finishes resolving.
 export default function InventoryLoading() {
   // Route-level loading mirrors the page structure so layout shift is small
   // while server components fetch inventory data.

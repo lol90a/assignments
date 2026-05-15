@@ -1,5 +1,8 @@
 "use client";
 
+// Next.js error boundaries must be client components because the reset callback
+// is interactive. The rest of the page remains server-rendered for secure data
+// access.
 export default function InventoryError({ reset }: Readonly<{ reset: () => void }>) {
   // Next.js passes reset so the user can retry the failed server render without
   // leaving the inventory route.

@@ -1,5 +1,8 @@
 import { clsx } from "clsx";
 
+// Badge tones are intentionally limited. A small status vocabulary keeps the
+// certificate table scannable and avoids one-off colors that weaken visual
+// consistency.
 type Tone = "neutral" | "success" | "warning" | "danger";
 
 const tones: Record<Tone, string> = {
