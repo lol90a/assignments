@@ -146,10 +146,3 @@ curl -X POST http://127.0.0.1:8080/parse-certificate \
 - Trace logging middleware can be extended with distributed tracing
 - Docker Compose service separation enables horizontal scaling behind a load balancer
 
-## Future Improvements
-
-- Add metrics (Prometheus)
-- Add request authentication/authorization
-- Use schema migration tooling in CI
-- Add more integration tests against a disposable test database
-- Add request size limits and rate limiting
