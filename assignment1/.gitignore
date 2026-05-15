@@ -1,0 +1,8 @@
+/target
+*.rs.bk
+*.env
+.env.local
+sqlx-data.json
+.DS_Store
+.idea/
+.vscode/

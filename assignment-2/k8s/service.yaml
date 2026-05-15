@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: certificate-api
+  namespace: certificate-platform
+  labels:
+    app.kubernetes.io/name: certificate-api
+spec:
+  # ClusterIP keeps the API private inside the cluster; ingress or mesh routing
+  # decides what is exposed externally.
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: certificate-api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

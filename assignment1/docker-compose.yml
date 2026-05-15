@@ -1,0 +1,32 @@
+services:
+  postgres:
+    # Local PostgreSQL instance used by the Rust service during development.
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "3010"
+      POSTGRES_DB: certificates
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  app:
+    # Builds the API image locally and connects it to the compose database.
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://postgres:3010@postgres:5432/certificates
+      SERVER_ADDR: 0.0.0.0:8080
+      RUST_LOG: certificate_service=info,tower_http=info
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  # Named volume keeps database state across container restarts.
+  postgres_data:

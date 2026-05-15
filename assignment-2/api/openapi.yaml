@@ -1,0 +1,121 @@
+openapi: 3.1.0
+info:
+  title: Certificate Issuance API
+  version: 1.0.0
+  description: Secure certificate issuance and inventory API designed for Rust Axum.
+paths:
+  /health:
+    get:
+      summary: Liveness health check
+      responses:
+        "200":
+          description: Service is alive
+  /ready:
+    get:
+      summary: Readiness health check
+      responses:
+        "200":
+          description: Service can serve traffic
+  /v1/certificates:issue:
+    post:
+      summary: Issue a certificate from a CSR
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueCertificateRequest"
+      responses:
+        "201":
+          description: Certificate issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueCertificateResponse"
+        "400":
+          description: Invalid CSR or policy violation
+        "403":
+          description: Caller is not authorized for requested subject
+  /v1/certificates:
+    get:
+      summary: List certificate inventory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: expires_before
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+        - in: query
+          name: page_size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Paged certificate inventory
+  /v1/certificates/{certificate_id}:
+    get:
+      summary: Get certificate details
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: certificate_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Certificate details
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    IssueCertificateRequest:
+      type: object
+      required: [csr_pem, requested_subject, requested_sans]
+      properties:
+        csr_pem:
+          type: string
+        requested_subject:
+          type: string
+        requested_sans:
+          type: array
+          items:
+            type: string
+        ttl_days:
+          type: integer
+          minimum: 1
+          maximum: 397
+    IssueCertificateResponse:
+      type: object
+      required: [certificate_id, serial_number, certificate_pem, not_after]
+      properties:
+        certificate_id:
+          type: string
+          format: uuid
+        serial_number:
+          type: string
+        certificate_pem:
+          type: string
+        not_after:
+          type: string
+          format: date-time

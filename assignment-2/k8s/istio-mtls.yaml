@@ -1,0 +1,28 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default-strict-mtls
+  namespace: certificate-platform
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-frontend-and-ops
+  namespace: certificate-platform
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: certificate-api
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/frontend/sa/certificate-frontend
+              - cluster.local/ns/platform-ops/sa/ops-automation
+      to:
+        - operation:
+            methods: ["GET", "POST"]

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: certificate-api-config
+  namespace: certificate-platform
+data:
+  # Non-secret runtime settings live in ConfigMap so the same image can be
+  # promoted between environments without rebuilds.
+  BIND_ADDR: "0.0.0.0:8080"
+  RUST_LOG: "info,tower_http=info,sqlx=warn"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability:4317"

@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: certificate-api
+  namespace: certificate-platform
+  labels:
+    app.kubernetes.io/name: certificate-api
+spec:
+  # Three replicas provide baseline availability before autoscaling reacts.
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: certificate-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: certificate-api
+      annotations:
+        # Prometheus scrape annotations let a standard cluster collector discover
+        # the service without a custom ServiceMonitor.
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: certificate-api
+      securityContext:
+        # Pod-level defaults enforce non-root execution and the runtime seccomp
+        # profile before container-specific restrictions are applied.
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/example/certificate-api:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: certificate-api-config
+            - secretRef:
+                name: certificate-api-secrets
+          readinessProbe:
+            # Readiness controls traffic routing; failed pods stay running but
+            # are removed from the Service endpoints.
+            httpGet:
+              path: /ready
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            # Liveness restarts a wedged process after repeated health failures.
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+            failureThreshold: 3
+          resources:
+            # Requests support scheduling and HPA math; limits cap worst-case
+            # CPU and memory consumption per pod.
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            # Container hardening reduces the impact of a compromised process.
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: certificate-api
+  namespace: certificate-platform

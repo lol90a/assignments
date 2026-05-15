@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO certificates (certificate_id, subject, issuer, expiration, san_entries)\n               VALUES ($1, $2, $3, $4, $5)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Text",
+        "Timestamptz",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e252adf2daa2d842f8ff4a887a3c4f9fc1fd74ff8ed60df822f638ae8b0e7fc1"
+}
