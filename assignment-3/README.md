@@ -43,18 +43,5 @@ http://localhost:3000/inventory
 - `lib/certificate-api.ts` isolates Assignment 1 API calls and TLS behavior.
 - `lib/format.ts` centralizes date/state formatting.
 
-## Why SSR and SWR
 
-SSR gives a fast first meaningful render, keeps sensitive backend configuration server-side, and makes the page resilient in restricted enterprise browsers. SWR is used after hydration for lightweight revalidation and client-side refresh behavior. React Query would also work, but SWR is smaller and well-suited to read-mostly dashboard pages with simple cache keys.
 
-## TLS and Local Development
-
-See `docs/TLS_AND_MTLS.md` for self-signed TLS and local mTLS explanation. In production, use trusted certificates at the edge and service mesh mTLS inside Kubernetes.
-
-## Production Considerations
-
-- Add authentication through OIDC and pass only server-side tokens to backend calls.
-- Move filtering and pagination into Assignment 1 once the backend grows beyond the minimal assessment API.
-- Add CSP headers once final API/image/font origins are known.
-- Run with a non-root container user.
-- Use mTLS inside Kubernetes through Istio or Linkerd rather than hand-rolling peer certificate validation in the frontend.
